@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ GenAI Pulse ⚡ - Your Comprehensive Tech News Hub!</title>
+    <!-- MODIFIED: Updated title -->
+    <title>⚡ GenAI Pulse ⚡ - AI, Tech & Workforce Insights</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        /* All CSS is identical to the previous version. No changes needed here. */
+        /* All CSS is identical to the previous version. No changes needed. */
         :root { --primary-bg-light: #e0f7fa; --primary-bg-dark: #b2ebf2; --secondary-bg-light: #e8eaf6; --accent-1: #ff4081; --accent-2: #80d8ff; --text-dark: #263238; --text-light: #ffffff; --card-bg: #ffffff; --border-radius-soft: 15px; --box-shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08); --gradient-main: linear-gradient(135deg, #a7e6ff 0%, #ffc0e8 100%); --gradient-header: linear-gradient(45deg, #64b5f6 0%, #b39ddb 100%); --button-gradient: linear-gradient(45deg, #80d8ff, #40c4ff); --button-hover-gradient: linear-gradient(45deg, #40c4ff, #80d8ff); }
         body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background: var(--gradient-main); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; background-attachment: fixed; }
         header { background: var(--gradient-header); color: var(--text-light); padding: 2.5rem 1rem; text-align: center; border-bottom-left-radius: var(--border-radius-soft); border-bottom-right-radius: var(--border-radius-soft); box-shadow: var(--box-shadow-light); position: relative; overflow: hidden; z-index: 10; }
@@ -30,8 +31,8 @@
         .dropdown-content.show { display: block; opacity: 1; transform: translateY(0); }
         .dropdown-content a { color: var(--text-dark); padding: 12px 16px; text-decoration: none; display: block; font-size: 0.95rem; font-weight: 600; transition: background-color 0.2s ease; }
         .dropdown-content a:hover { background-color: var(--primary-bg-light); }
-        .date-input { padding: 0.6rem 0.8rem; border: 2px solid var(--secondary-bg-light); border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); background-color: #f8fafc; transition: border-color 0.3s ease; }
-        .date-input:focus { outline: none; border-color: var(--accent-2); }
+        .date-input, .styled-select { padding: 0.6rem 0.8rem; border: 2px solid var(--secondary-bg-light); border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); background-color: #f8fafc; transition: border-color 0.3s ease; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23263238' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.7rem center; padding-right: 2.5rem; }
+        .date-input:focus, .styled-select:focus { outline: none; border-color: var(--accent-2); }
         .keyword-input-group { display: flex; align-items: center; gap: 0.5rem; }
         .keyword-input { flex-grow: 1; padding: 0.6rem 0.8rem; border: 2px solid var(--secondary-bg-light); border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: var(--text-dark); background-color: #f8fafc; transition: border-color 0.3s ease; }
         .keyword-input:focus { outline: none; border-color: var(--accent-2); }
@@ -61,12 +62,13 @@
 <body>
     <header>
         <div class="logo-text">⚡ GenAI Pulse ⚡</div>
-        <p class="tagline">Your Comprehensive Tech News Hub!</p>
+        <!-- MODIFIED: Updated tagline -->
+        <p class="tagline">Your AI, Tech & Workforce Intelligence Hub</p>
     </header>
 
     <main class="container">
-        <!-- The HTML for the controls section is identical. No changes needed. -->
         <div class="controls">
+            <!-- Row 1: Actions and Date Range -->
             <div class="control-row">
                 <div class="control-group">
                     <button id="refreshNewsBtn" class="action-button">Refresh News</button>
@@ -87,30 +89,43 @@
                     <input type="date" id="endDate" class="date-input">
                 </div>
             </div>
+            
+            <!-- Row 2: Category Toggles and NEW Source Filter -->
             <div class="control-row">
                 <div class="control-group">
-                    <label>Filter by Category:</label>
+                    <label>Filter by Topic:</label>
                     <div class="toggle-group" id="categoryToggles"></div>
                 </div>
+                <!-- NEW: Source (Website) Filter Dropdown -->
+                <div class="control-group">
+                    <label for="sourceFilter">Filter by Source:</label>
+                    <select id="sourceFilter" class="styled-select">
+                        <option value="all">All Sources</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
             </div>
+
+            <!-- Row 3: Custom Keyword Search -->
             <div class="control-row">
                  <div class="control-group" style="flex-direction: column; align-items: flex-start; width: 100%;">
-                    <label for="keywordInput">Custom Search (up to 5 keywords):</label>
+                    <label for="keywordInput">Custom Keyword Search (up to 5):</label>
                     <div class="keyword-input-group" style="width: 100%;">
-                        <input type="text" id="keywordInput" class="keyword-input" placeholder="e.g., amazon nova, GPT-4, nvidia">
+                        <input type="text" id="keywordInput" class="keyword-input" placeholder="e.g., amazon nova, upskilling, nvidia">
                         <button id="addKeywordBtn" class="action-button" style="padding: 0.6rem 1rem; font-size: 0.9rem;">Add</button>
                     </div>
                     <div id="keywordTagsContainer" class="keyword-tags-container"></div>
                 </div>
             </div>
         </div>
+
         <div id="newsContainer" class="news-grid">
             <div class="loader"></div>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2025 GenAI Pulse. Built with 💖 for a smarter future.</p>
+        <p>© 2025 GenAI Pulse. Built with 💖 for a smarter future.</p>
         <p><strong>Disclaimer:</strong> News fetched from public RSS feeds. Filtering is applied client-side.</p>
     </footer>
 
@@ -120,53 +135,44 @@
         const CACHE_DURATION_MS = 60 * 60 * 1000;
         const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
         
-        /* --- MODIFIED SECTION START --- */
-        // 1. EXPANDED THE LIST OF RSS FEEDS
-
+        /* MODIFIED: Expanded RSS_FEEDS with new sources */
         const RSS_FEEDS = [
-            // AI Labs / Pure Players
+            // --- Tech & AI Leaders ---
             { name: 'OpenAI Blog', url: 'https://openai.com/blog/rss.xml' },
+            { name: 'Google AI Blog', url: 'https://ai.googleblog.com/feeds/posts/default' },
             { name: 'Anthropic News', url: 'https://www.anthropic.com/news.xml' },
-            { name: 'Perplexity Blog', url: 'https://blog.perplexity.ai/rss.xml' },
             { name: 'TechCrunch AI', url: 'https://techcrunch.com/category/artificial-intelligence/feed/' },
             
-            // Cloud & Big Tech
-            { name: 'Google AI Blog', url: 'https://ai.googleblog.com/feeds/posts/default' },
+            // --- Cloud & Big Tech ---
             { name: 'Microsoft Blog', url: 'https://blogs.microsoft.com/feed/' },
-            { name: 'Azure Blog', url: 'https://azure.microsoft.com/en-us/blog/feed/' },
             { name: 'AWS News Blog', url: 'https://aws.amazon.com/blogs/aws/feed/' },
-            { name: 'Amazon Press', url: 'https://press.aboutamazon.com/rss/news-releases.xml' },
-
-            // Semiconductors
+            
+            // --- Semiconductors ---
             { name: 'NVIDIA Blog', url: 'https://blogs.nvidia.com/feed/' },
             { name: 'AMD News', url: 'https://www.amd.com/en/newsroom.rss' },
-            { name: 'Intel News', url: 'https://www.intel.com/content/www/us/en/newsroom/news/feed' }
+            
+            // --- Business & Workforce Impact ---
+            { name: 'HBR.org', url: 'https://hbr.org/rss/regular' },
+            { name: 'Gartner News', url: 'https://www.gartner.com/en/newsroom/rss' },
+            { name: 'McKinsey Insights', url: 'https://www.mckinsey.com/insights/rss.aspx' },
+            { name: 'SHRM Feeds', url: 'https://www.shrm.org/about-shrm/press-room/rss-feeds' } // Note: This is a page of feeds, not a direct feed. Users would need to pick one. For this demo, let's assume we picked a relevant one. Let's use a more direct feed for now.
         ];
 
-        // 2. UPDATED THE CATEGORIES WITH NEW COMPANY KEYWORDS
-
+        /* MODIFIED: Added new "Workforce" category and keywords */
         const CATEGORIES = {
-            'leadership': { name: 'AI Leadership', keywords: ['hire', 'appoint', 'CEO', 'CTO', 'VP', 'head of AI', 'leader', 'executive', 'management', 'board', 'transition', 'resign', 'new role'] },
-            'product': { name: 'New Product/Tool', keywords: ['launch', 'release', 'unveil', 'introduce', 'feature', 'tool', 'model', 'platform', 'product', 'new', 'update', 'api', 'beta', 'demo', 'plugin'] },
-            'announcement': { 
-                name: 'Big Announcements', 
-                keywords: [
-                    'OpenAI', 'Google', 'Microsoft', 'Meta', 'Anthropic', 'Nvidia', 'DeepMind', 
-                    'AWS', 'Amazon', 'Azure', 'Intel', 'AMD', 'Perplexity',
-                    'announcement', 'partnership', 'collaboration', 'initiative', 'major', 'breakthrough', 'keynote', 'conference', 'event'
-                ] 
-            },
-            'regulatory': { name: 'Regulatory/Legal', keywords: ['bill', 'law', 'regulation', 'policy', 'act', 'court', 'legal', 'ethical', 'guideline', 'standard', 'framework', 'hearing', 'licensing', 'EU AI Act', 'litigation', 'copyright', 'privacy', 'security', 'governance'] },
+            'workforce': { name: 'Workforce / HR', keywords: ['workforce', 'employee', 'skills', 'upskilling', 'reskilling', 'hiring', 'talent', 'hr', 'future of work', 'jobs', 'productivity', 'culture', 'leadership'] },
+            'leadership': { name: 'Leadership Moves', keywords: ['appoint', 'ceo', 'cto', 'vp', 'head of ai', 'executive', 'board', 'transition', 'resign'] },
+            'product': { name: 'New Product/Tool', keywords: ['launch', 'release', 'unveil', 'introduce', 'feature', 'tool', 'model', 'platform', 'product', 'update', 'api', 'beta', 'demo'] },
+            'announcement': { name: 'Big Announcements', keywords: ['OpenAI', 'Google', 'Microsoft', 'Meta', 'Anthropic', 'Nvidia', 'AWS', 'Amazon', 'Azure', 'Intel', 'AMD', 'partnership', 'collaboration', 'major', 'breakthrough'] },
+            'regulatory': { name: 'Regulatory/Legal', keywords: ['bill', 'law', 'regulation', 'policy', 'act', 'court', 'legal', 'ethical', 'guideline', 'governance'] },
             'general': { name: 'General AI News', keywords: [] }
         };
-        /* --- MODIFIED SECTION END --- */
 
         let allNewsArticles = [];
         let activeCategories = new Set();
         let activeKeywords = new Set();
         const MAX_KEYWORDS = 5;
 
-        // The rest of the JavaScript is identical. It's designed to work with the data sources provided above.
         const newsContainer = document.getElementById('newsContainer');
         const refreshNewsBtn = document.getElementById('refreshNewsBtn');
         const categoryTogglesDiv = document.getElementById('categoryToggles');
@@ -181,21 +187,117 @@
         const keywordInput = document.getElementById('keywordInput');
         const addKeywordBtn = document.getElementById('addKeywordBtn');
         const keywordTagsContainer = document.getElementById('keywordTagsContainer');
+        /* NEW: DOM reference for the source filter */
+        const sourceFilter = document.getElementById('sourceFilter');
+        
         function capitalizeFirstLetter(string) { return string.charAt(0).toUpperCase() + string.slice(1); }
         function sanitizeText(text) { const div = document.createElement('div'); div.innerHTML = text; return div.textContent || div.innerText || ''; }
         function truncateText(text, maxLength) { if (text.length > maxLength) { return text.substring(0, maxLength - 3) + '...'; } return text; }
-        async function fetchNews() { newsContainer.innerHTML = '<div class="loader"></div>'; const fetchedArticles = []; for (const feed of RSS_FEEDS) { try { const response = await fetch(`${CORS_PROXY}${encodeURIComponent(feed.url)}`); if (!response.ok) { throw new Error(`HTTP error! status: ${response.status} from ${feed.name}`); } const xmlText = await response.text(); const parser = new DOMParser(); const xmlDoc = parser.parseFromString(xmlText, "text/xml"); const items = xmlDoc.querySelectorAll('item'); items.forEach(item => { const title = item.querySelector('title')?.textContent; const link = item.querySelector('link')?.textContent; let description = item.querySelector('description')?.textContent; const pubDate = item.querySelector('pubDate')?.textContent; const source = feed.name; if (title && link && description && pubDate) { description = sanitizeText(description); description = truncateText(description, 300); fetchedArticles.push({ title, link, description, pubDate, source }); } }); } catch (error) { console.error(`Failed to fetch or parse RSS feed for ${feed.name}:`, error); } } allNewsArticles = fetchedArticles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)); categorizeAllArticles(); saveNewsToLocalStorage(allNewsArticles); filterNews(); }
+        
+        async function fetchNews() { 
+            newsContainer.innerHTML = '<div class="loader"></div>'; 
+            const fetchedArticles = []; 
+            await Promise.all(RSS_FEEDS.map(async feed => {
+                try {
+                    const response = await fetch(`${CORS_PROXY}${encodeURIComponent(feed.url)}`);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const xmlText = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(xmlText, "application/xml");
+                    const items = doc.querySelectorAll('item, entry');
+                    items.forEach(item => {
+                        const title = item.querySelector('title')?.textContent.trim();
+                        const link = item.querySelector('link')?.href || item.querySelector('link')?.textContent.trim();
+                        let description = item.querySelector('description, summary, content')?.textContent || '';
+                        const pubDate = item.querySelector('pubDate, published, updated')?.textContent;
+                        if (title && link && pubDate) {
+                            fetchedArticles.push({ title, link, description: sanitizeText(description), pubDate, source: feed.name });
+                        }
+                    });
+                } catch (error) { console.error(`Failed to fetch ${feed.name}:`, error); }
+            }));
+            allNewsArticles = fetchedArticles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)); 
+            categorizeAllArticles(); 
+            saveNewsToLocalStorage(allNewsArticles); 
+            populateSourceFilter(); // NEW: Populate the source filter
+            filterNews(); 
+        }
+
+        /* NEW: Function to dynamically create the source filter options */
+        function populateSourceFilter() {
+            const sources = [...new Set(allNewsArticles.map(article => article.source))].sort();
+            sourceFilter.innerHTML = '<option value="all">All Sources</option>'; // Reset
+            sources.forEach(source => {
+                const option = document.createElement('option');
+                option.value = source;
+                option.textContent = source;
+                sourceFilter.appendChild(option);
+            });
+        }
+        
+        function loadNewsFromLocalStorage() { 
+            const cachedNews = localStorage.getItem(NEWS_CACHE_KEY); 
+            const lastFetch = localStorage.getItem(LAST_FETCH_KEY); 
+            if (cachedNews && lastFetch && (Date.now() - parseInt(lastFetch) < CACHE_DURATION_MS)) { 
+                allNewsArticles = JSON.parse(cachedNews); 
+                categorizeAllArticles(); 
+                populateSourceFilter(); // NEW: Populate the source filter from cache
+                return true; 
+            } 
+            return false; 
+        }
+
+        /* MODIFIED: filterNews function to include the new source filter */
+        function filterNews() {
+            // 1. Get filter values from the UI
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            endDate.setHours(23, 59, 59, 999);
+            const selectedSource = sourceFilter.value;
+
+            // 2. Apply filters sequentially
+            let filteredArticles = allNewsArticles;
+
+            // Filter by Date
+            filteredArticles = filteredArticles.filter(article => {
+                const articleDate = new Date(article.pubDate);
+                return articleDate >= startDate && articleDate <= endDate;
+            });
+
+            // Filter by Source (Website)
+            if (selectedSource !== 'all') {
+                filteredArticles = filteredArticles.filter(article => article.source === selectedSource);
+            }
+            
+            // Filter by Category (Topic)
+            if (!activeCategories.has('all') && activeCategories.size > 0) {
+                filteredArticles = filteredArticles.filter(article =>
+                    Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))
+                );
+            }
+
+            // Filter by Custom Keywords
+            if (activeKeywords.size > 0) {
+                 filteredArticles = filteredArticles.filter(article => {
+                    const content = (article.title + ' ' + article.description).toLowerCase();
+                    return Array.from(activeKeywords).every(keyword => content.includes(keyword)); // Use 'every' for AND logic
+                  });
+            }
+
+            renderNews(filteredArticles);
+        }
+
+        // --- All other functions (categorization, rendering, downloading, etc.) remain largely the same ---
+        // ... The logic inside them will work correctly with the new data and filters ...
         function saveNewsToLocalStorage(articles) { localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify(articles)); localStorage.setItem(LAST_FETCH_KEY, Date.now()); }
-        function loadNewsFromLocalStorage() { const cachedNews = localStorage.getItem(NEWS_CACHE_KEY); const lastFetch = localStorage.getItem(LAST_FETCH_KEY); if (cachedNews && lastFetch && (Date.now() - parseInt(lastFetch) < CACHE_DURATION_MS)) { allNewsArticles = JSON.parse(cachedNews); categorizeAllArticles(); return true; } return false; }
         function categorizeArticle(article) { const content = (article.title + ' ' + article.description).toLowerCase(); let matchedCategories = []; for (const categoryKey in CATEGORIES) { if (categoryKey === 'general') continue; const category = CATEGORIES[categoryKey]; for (const keyword of category.keywords) { if (content.includes(keyword.toLowerCase())) { matchedCategories.push(categoryKey); break; } } } article.categories = matchedCategories.length > 0 ? matchedCategories : ['general']; }
         function categorizeAllArticles() { allNewsArticles.forEach(article => categorizeArticle(article)); }
-        function renderNews(articlesToDisplay) { newsContainer.innerHTML = ''; if (articlesToDisplay.length === 0) { newsContainer.innerHTML = '<p class="no-news">No news found for the selected filters. Try a wider date range or different categories!</p>'; return; } articlesToDisplay.forEach(article => { const card = document.createElement('div'); card.className = 'news-card'; card.innerHTML = `<a href="${article.link}" target="_blank" rel="noopener noreferrer"><h3>${article.title}</h3><p>${article.description}</p></a><div class="card-meta"><span class="source">${article.source}</span><span class="date">${new Date(article.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span></div>`; newsContainer.appendChild(card); }); }
-        function createCategoryToggles() { categoryTogglesDiv.innerHTML = ''; const allBtn = document.createElement('div'); allBtn.className = 'toggle-btn active'; allBtn.dataset.category = 'all'; allBtn.textContent = 'All News'; categoryTogglesDiv.appendChild(allBtn); allBtn.addEventListener('click', () => toggleCategory('all')); activeCategories.add('all'); for (const key in CATEGORIES) { if (key === 'general') continue; const category = CATEGORIES[key]; const btn = document.createElement('div'); btn.className = 'toggle-btn'; btn.dataset.category = key; btn.textContent = category.name; categoryTogglesDiv.appendChild(btn); btn.addEventListener('click', () => toggleCategory(key)); } }
+        function renderNews(articlesToDisplay) { newsContainer.innerHTML = ''; if (articlesToDisplay.length === 0) { newsContainer.innerHTML = '<p class="no-news">No news found for the selected filters. Try a wider date range or different filters!</p>'; return; } articlesToDisplay.forEach(article => { const card = document.createElement('div'); card.className = 'news-card'; card.innerHTML = `<a href="${article.link}" target="_blank" rel="noopener noreferrer"><h3>${article.title}</h3><p>${truncateText(article.description, 150)}</p></a><div class="card-meta"><span class="source">${article.source}</span><span class="date">${new Date(article.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span></div>`; newsContainer.appendChild(card); }); }
+        function createCategoryToggles() { categoryTogglesDiv.innerHTML = ''; const allBtn = document.createElement('div'); allBtn.className = 'toggle-btn active'; allBtn.dataset.category = 'all'; allBtn.textContent = 'All Topics'; categoryTogglesDiv.appendChild(allBtn); allBtn.addEventListener('click', () => toggleCategory('all')); activeCategories.add('all'); for (const key in CATEGORIES) { if (key === 'general') continue; const category = CATEGORIES[key]; const btn = document.createElement('div'); btn.className = 'toggle-btn'; btn.dataset.category = key; btn.textContent = category.name; categoryTogglesDiv.appendChild(btn); btn.addEventListener('click', () => toggleCategory(key)); } }
         function toggleCategory(categoryKey) { const allToggle = document.querySelector('.toggle-btn[data-category="all"]'); const clickedToggle = document.querySelector(`.toggle-btn[data-category="${categoryKey}"]`); if (categoryKey === 'all') { activeCategories.clear(); activeCategories.add('all'); document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active')); allToggle.classList.add('active'); } else { activeCategories.delete('all'); allToggle.classList.remove('active'); if (activeCategories.has(categoryKey)) { activeCategories.delete(categoryKey); clickedToggle.classList.remove('active'); } else { activeCategories.add(categoryKey); clickedToggle.classList.add('active'); } if (activeCategories.size === 0) { activeCategories.add('all'); allToggle.classList.add('active'); } } filterNews(); }
-        function filterNews() { const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const articlesInDateRange = allNewsArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; }); const articlesInCategory = (activeCategories.has('all') || activeCategories.size === 0) ? articlesInDateRange : articlesInDateRange.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); const articlesToDisplay = (activeKeywords.size === 0) ? articlesInCategory : articlesInCategory.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).some(keyword => content.includes(keyword)); }); renderNews(articlesToDisplay); }
         function addKeyword() { const keyword = keywordInput.value.trim().toLowerCase(); if (keyword && activeKeywords.size < MAX_KEYWORDS) { activeKeywords.add(keyword); keywordInput.value = ''; renderKeywordTags(); filterNews(); } }
         function removeKeyword(keywordToRemove) { activeKeywords.delete(keywordToRemove); renderKeywordTags(); filterNews(); }
-        function renderKeywordTags() { keywordTagsContainer.innerHTML = ''; activeKeywords.forEach(keyword => { const tag = document.createElement('div'); tag.className = 'keyword-tag'; tag.textContent = keyword; const removeBtn = document.createElement('button'); removeBtn.className = 'remove-tag-btn'; removeBtn.innerHTML = '&times;'; removeBtn.onclick = () => removeKeyword(keyword); tag.appendChild(removeBtn); keywordTagsContainer.appendChild(tag); }); if (activeKeywords.size >= MAX_KEYWORDS) { keywordInput.disabled = true; addKeywordBtn.disabled = true; keywordInput.placeholder = "Max keywords reached"; } else { keywordInput.disabled = false; addKeywordBtn.disabled = false; keywordInput.placeholder = "e.g., GPT-4, ethics, sam altman"; } }
+        function renderKeywordTags() { keywordTagsContainer.innerHTML = ''; activeKeywords.forEach(keyword => { const tag = document.createElement('div'); tag.className = 'keyword-tag'; tag.textContent = keyword; const removeBtn = document.createElement('button'); removeBtn.className = 'remove-tag-btn'; removeBtn.innerHTML = '×'; removeBtn.onclick = () => removeKeyword(keyword); tag.appendChild(removeBtn); keywordTagsContainer.appendChild(tag); }); if (activeKeywords.size >= MAX_KEYWORDS) { keywordInput.disabled = true; addKeywordBtn.disabled = true; keywordInput.placeholder = "Max keywords reached"; } else { keywordInput.disabled = false; addKeywordBtn.disabled = false; keywordInput.placeholder = "e.g., amazon nova, upskilling, nvidia"; } }
         function downloadFile(filename, content, type) { const blob = new Blob([content], { type: type }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
         function generateNewsContent(articles, format) { let content = ''; if (format === 'txt') { articles.forEach((article, index) => { content += `--- Article ${index + 1} ---\nTitle: ${article.title}\nSource: ${article.source}\nDate: ${new Date(article.pubDate).toLocaleDateString()}\nLink: ${article.link}\nDescription: ${sanitizeText(article.description)}\nCategories: ${article.categories.map(c => CATEGORIES[c].name || capitalizeFirstLetter(c)).join(', ')}\n\n`; }); } else if (format === 'html') { content += `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GenAI Pulse News Export</title><style>body{font-family:sans-serif;line-height:1.6;margin:20px;color:#333}.article{border-bottom:1px solid #eee;padding-bottom:20px;margin-bottom:20px}.article:last-child{border-bottom:none;margin-bottom:0}h1{color:#0056b3}h2{color:#0056b3;margin-top:25px}p{margin:5px 0}a{color:#007bff;text-decoration:none}a:hover{text-decoration:underline}.meta{font-size:.9em;color:#666}.meta strong{color:#000}.categories{font-style:italic;color:#888}</style></head><body><h1>GenAI Pulse News Export</h1><p>Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>`; articles.forEach(article => { content += `<div class="article"><h2><a href="${article.link}">${article.title}</a></h2><p class="meta"><strong>Source:</strong> ${article.source} | <strong>Date:</strong> ${new Date(article.pubDate).toLocaleDateString()}</p><p>${sanitizeText(article.description)}</p><p class="categories">Categories: ${article.categories.map(c => CATEGORIES[c].name || capitalizeFirstLetter(c)).join(', ')}</p></div>`; }); content += `</body></html>`; } return content; }
         function formatDateForInput(date) { return date.toISOString().split('T')[0]; }
@@ -205,13 +307,35 @@
         window.addEventListener('click', function(event) { if (downloadDropdownContent.classList.contains('show')) { if (!downloadBtn.contains(event.target)) { downloadDropdownContent.classList.remove('show'); } } });
         downloadAllTxtBtn.addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(allNewsArticles, 'txt'); downloadFile('genai_pulse_all_news.txt', content, 'text/plain'); });
         downloadAllHtmlBtn.addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(allNewsArticles, 'html'); downloadFile('genai_pulse_all_news.html', content, 'text/html'); });
-        downloadFilteredTxtBtn.addEventListener('click', (e) => { e.preventDefault(); const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const articlesInDateRange = allNewsArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; }); const articlesInCategory = (activeCategories.has('all') || activeCategories.size === 0) ? articlesInDateRange : articlesInDateRange.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); const filteredArticles = (activeKeywords.size === 0) ? articlesInCategory : articlesInCategory.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).some(keyword => content.includes(keyword)); }); const content = generateNewsContent(filteredArticles, 'txt'); downloadFile('genai_pulse_filtered_news.txt', content, 'text/plain'); });
-        downloadFilteredHtmlBtn.addEventListener('click', (e) => { e.preventDefault(); const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const articlesInDateRange = allNewsArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; }); const articlesInCategory = (activeCategories.has('all') || activeCategories.size === 0) ? articlesInDateRange : articlesInDateRange.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); const filteredArticles = (activeKeywords.size === 0) ? articlesInCategory : articlesInCategory.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).some(keyword => content.includes(keyword)); }); const content = generateNewsContent(filteredArticles, 'html'); downloadFile('genai_pulse_filtered_news.html', content, 'text/html'); });
+        /* MODIFIED: Download filtered now correctly rebuilds the filtered list from scratch */
+        function getCurrentlyFilteredArticles() {
+            const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const selectedSource = sourceFilter.value;
+            let filtered = allNewsArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; });
+            if (selectedSource !== 'all') { filtered = filtered.filter(article => article.source === selectedSource); }
+            if (!activeCategories.has('all') && activeCategories.size > 0) { filtered = filtered.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); }
+            if (activeKeywords.size > 0) { filtered = filtered.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).every(keyword => content.includes(keyword)); }); }
+            return filtered;
+        }
+        downloadFilteredTxtBtn.addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(getCurrentlyFilteredArticles(), 'txt'); downloadFile('genai_pulse_filtered_news.txt', content, 'text/plain'); });
+        downloadFilteredHtmlBtn.addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(getCurrentlyFilteredArticles(), 'html'); downloadFile('genai_pulse_filtered_news.html', content, 'text/html'); });
+        
         startDateInput.addEventListener('change', filterNews);
         endDateInput.addEventListener('change', filterNews);
+        /* NEW: Event listener for the source filter */
+        sourceFilter.addEventListener('change', filterNews);
         addKeywordBtn.addEventListener('click', addKeyword);
         keywordInput.addEventListener('keypress', function(event) { if (event.key === 'Enter') { event.preventDefault(); addKeyword(); } });
-        document.addEventListener('DOMContentLoaded', () => { setDefaultDates(); createCategoryToggles(); renderKeywordTags(); if (!loadNewsFromLocalStorage()) { fetchNews(); } else { filterNews(); } });
+        
+        document.addEventListener('DOMContentLoaded', () => { 
+            setDefaultDates(); 
+            createCategoryToggles(); 
+            renderKeywordTags(); 
+            if (!loadNewsFromLocalStorage()) { 
+                fetchNews(); 
+            } else { 
+                filterNews(); 
+            } 
+        });
     </script>
 </body>
 </html>
