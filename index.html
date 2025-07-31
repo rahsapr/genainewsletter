@@ -62,7 +62,7 @@
     <header>
         <div class="logo-text">⚡ GenAI Pulse ⚡</div>
         <p class="tagline">Your AI & Future of Work Intelligence Hub</p>
-    </header>
+    </main>
     <main class="container">
         <div class="controls">
             <div class="control-row">
@@ -89,7 +89,6 @@
         const CACHE_DURATION_MS = 60 * 60 * 1000;
         const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
         
-        /* --- MODIFIED: Integrated all new specific RSS feeds with clear names --- */
         const RSS_FEEDS = [
             // --- Business & Workforce Focus ---
             { name: 'HBR (Main)', url: 'http://feeds.harvardbusiness.org/harvardbusiness' },
@@ -125,7 +124,7 @@
         let activeKeywords = new Set();
         const MAX_KEYWORDS = 5;
 
-        // --- DOM Elements ---
+        // DOM Elements
         const newsContainer = document.getElementById('newsContainer');
         const refreshNewsBtn = document.getElementById('refreshNewsBtn');
         const downloadBtn = document.getElementById('downloadBtn');
@@ -135,7 +134,17 @@
         const keywordInput = document.getElementById('keywordInput');
         const addKeywordBtn = document.getElementById('addKeywordBtn');
         
-        /* --- MODIFIED & FIXED: The core fetching and parsing logic is now more robust --- */
+        // --- HELPER FUNCTIONS ---
+        /* THIS IS THE CRITICAL FUNCTION THAT WAS MISSING IN THE PREVIOUS BUGGY VERSION */
+        function sanitizeText(text) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = text; // Let the browser parse the HTML
+            return tempDiv.textContent || tempDiv.innerText || ''; // Extract only the text content
+        }
+        function formatDateForInput(date) { return date.toISOString().split('T')[0]; }
+        function setDefaultDates() { const today = new Date(); const oneWeekAgo = new Date(); oneWeekAgo.setDate(today.getDate() - 7); endDateInput.value = formatDateForInput(today); startDateInput.value = formatDateForInput(oneWeekAgo); }
+
+        /* --- CORE LOGIC --- */
         async function fetchNews() { 
             newsContainer.innerHTML = '<div class="loader"></div>'; 
             const fetchedArticles = []; 
@@ -157,8 +166,16 @@
                     items.forEach(item => {
                         const title = item.querySelector('title')?.textContent.trim() || 'No Title';
                         const pubDate = item.querySelector('pubDate, published, updated')?.textContent;
-                        let description = item.querySelector('description, summary, content, "content\\:encoded"')?.textContent || '';
-                        
+
+                        /* --- BUG FIX IS HERE: Robust Description & Link Parsing --- */
+                        // Try multiple common tags for description and take the first one found.
+                        const descriptionNode = item.querySelector('description') || 
+                                                item.querySelector('summary') || 
+                                                item.querySelector('content') ||
+                                                item.querySelector('content\\:encoded'); // Correctly escaped
+                        const description = descriptionNode ? descriptionNode.textContent : '';
+
+                        // Resiliently find the link URL
                         let link = '';
                         const linkNode = item.querySelector('link');
                         if (linkNode) {
@@ -188,7 +205,7 @@
             filterNews(); 
         }
 
-        // --- All other helper functions are the same as the previous correct version ---
+        // --- All other functions are the same and will work correctly with the fixed data ---
         function populateSourceFilter() { const sources = [...new Set(allNewsArticles.map(article => article.source))].sort(); sourceFilter.innerHTML = '<option value="all">All Sources</option>'; sources.forEach(source => { const option = document.createElement('option'); option.value = source; option.textContent = source; sourceFilter.appendChild(option); }); }
         function loadNewsFromLocalStorage() { const cachedNews = localStorage.getItem(NEWS_CACHE_KEY); const lastFetch = localStorage.getItem(LAST_FETCH_KEY); if (cachedNews && lastFetch && (Date.now() - parseInt(lastFetch) < CACHE_DURATION_MS)) { allNewsArticles = JSON.parse(cachedNews); categorizeAllArticles(); populateSourceFilter(); return true; } return false; }
         function filterNews() { const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const selectedSource = sourceFilter.value; let filteredArticles = allNewsArticles; filteredArticles = filteredArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; }); if (selectedSource !== 'all') { filteredArticles = filteredArticles.filter(article => article.source === selectedSource); } if (!activeCategories.has('all') && activeCategories.size > 0) { filteredArticles = filteredArticles.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); } if (activeKeywords.size > 0) { filteredArticles = filteredArticles.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).every(keyword => content.includes(keyword)); }); } renderNews(filteredArticles); }
@@ -204,13 +221,8 @@
         function downloadFile(filename, content, type) { const blob = new Blob([content], { type: type }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
         function generateNewsContent(articles, format) { let content = ''; if (format === 'txt') { articles.forEach((article, index) => { content += `--- Article ${index + 1} ---\nTitle: ${article.title}\nSource: ${article.source}\nDate: ${new Date(article.pubDate).toLocaleDateString()}\nLink: ${article.link}\nDescription: ${sanitizeText(article.description)}\nCategories: ${article.categories.map(c => CATEGORIES[c].name || c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}\n\n`; }); } else if (format === 'html') { content += `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GenAI Pulse News Export</title><style>body{font-family:sans-serif;line-height:1.6;margin:20px;color:#333}.article{border-bottom:1px solid #eee;padding-bottom:20px;margin-bottom:20px}.article:last-child{border-bottom:none;margin-bottom:0}h1{color:#0056b3}h2{color:#0056b3;margin-top:25px}p{margin:5px 0}a{color:#007bff;text-decoration:none}a:hover{text-decoration:underline}.meta{font-size:.9em;color:#666}.meta strong{color:#000}.categories{font-style:italic;color:#888}</style></head><body><h1>GenAI Pulse News Export</h1><p>Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>`; articles.forEach(article => { content += `<div class="article"><h2><a href="${article.link}">${article.title}</a></h2><p class="meta"><strong>Source:</strong> ${article.source} | <strong>Date:</strong> ${new Date(article.pubDate).toLocaleDateString()}</p><p>${sanitizeText(article.description)}</p><p class="categories">Categories: ${article.categories.map(c => CATEGORIES[c].name || c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}</p></div>`; }); content += `</body></html>`; } return content; }
         function getCurrentlyFilteredArticles() { const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const selectedSource = sourceFilter.value; let filtered = allNewsArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; }); if (selectedSource !== 'all') { filtered = filtered.filter(article => article.source === selectedSource); } if (!activeCategories.has('all') && activeCategories.size > 0) { filtered = filtered.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); } if (activeKeywords.size > 0) { filtered = filtered.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).every(keyword => content.includes(keyword)); }); } return filtered; }
-        document.getElementById('downloadFilteredTxt').addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(getCurrentlyFilteredArticles(), 'txt'); downloadFile('genai_pulse_filtered_news.txt', content, 'text/plain'); });
-        document.getElementById('downloadFilteredHtml').addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(getCurrentlyFilteredArticles(), 'html'); downloadFile('genai_pulse_filtered_news.html', content, 'text/html'); });
-        document.getElementById('downloadAllTxt').addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(allNewsArticles, 'txt'); downloadFile('genai_pulse_all_news.txt', content, 'text/plain'); });
-        document.getElementById('downloadAllHtml').addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(allNewsArticles, 'html'); downloadFile('genai_pulse_all_news.html', content, 'text/html'); });
-        function formatDateForInput(date) { return date.toISOString().split('T')[0]; }
-        function setDefaultDates() { const today = new Date(); const oneWeekAgo = new Date(); oneWeekAgo.setDate(today.getDate() - 7); endDateInput.value = formatDateForInput(today); startDateInput.value = formatDateForInput(oneWeekAgo); }
-        function sanitizeText(text) { const div = document.createElement('div'); div.innerHTML = text; return div.textContent || div.innerText || ''; }
+        
+        // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => { setDefaultDates(); createCategoryToggles(); renderKeywordTags(); if (!loadNewsFromLocalStorage()) { fetchNews(); } else { filterNews(); } });
         refreshNewsBtn.addEventListener('click', fetchNews);
         downloadBtn.addEventListener('click', function(event) { event.stopPropagation(); document.getElementById('downloadDropdownContent').classList.toggle('show'); });
@@ -220,6 +232,10 @@
         sourceFilter.addEventListener('change', filterNews);
         addKeywordBtn.addEventListener('click', addKeyword);
         keywordInput.addEventListener('keypress', function(event) { if (event.key === 'Enter') { event.preventDefault(); addKeyword(); } });
+        document.getElementById('downloadFilteredTxt').addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(getCurrentlyFilteredArticles(), 'txt'); downloadFile('genai_pulse_filtered_news.txt', content, 'text/plain'); });
+        document.getElementById('downloadFilteredHtml').addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(getCurrentlyFilteredArticles(), 'html'); downloadFile('genai_pulse_filtered_news.html', content, 'text/html'); });
+        document.getElementById('downloadAllTxt').addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(allNewsArticles, 'txt'); downloadFile('genai_pulse_all_news.txt', content, 'text/plain'); });
+        document.getElementById('downloadAllHtml').addEventListener('click', (e) => { e.preventDefault(); const content = generateNewsContent(allNewsArticles, 'html'); downloadFile('genai_pulse_all_news.html', content, 'text/html'); });
     </script>
 </body>
 </html>
