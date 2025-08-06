@@ -39,7 +39,6 @@ const endDateInput = document.getElementById('endDate');
 const sourceFilter = document.getElementById('sourceFilter');
 const keywordInput = document.getElementById('keywordInput');
 const addKeywordBtn = document.getElementById('addKeywordBtn');
-// YouTube Tab Elements
 const tabNews = document.getElementById('tab-news');
 const tabYoutube = document.getElementById('tab-youtube');
 const newsContentArea = document.getElementById('news-content-area');
@@ -53,7 +52,14 @@ const downloadYTBtn = document.getElementById('downloadYTBtn');
 // --- HELPER FUNCTIONS ---
 function sanitizeText(text) { const tempDiv = document.createElement('div'); tempDiv.innerHTML = text; return tempDiv.textContent || tempDiv.innerText || ''; }
 function formatDateForInput(date) { return date.toISOString().split('T')[0]; }
-function setDefaultDates() { const today = new Date(); const oneWeekAgo = new Date(); oneWeekAgo.setDate(today.getDate() - 7); const formattedToday = formatDateForInput(today); const formattedOneWeekAgo = formatDateForInput(oneWeekAgo); startDateInput.value = formattedOneWeekAgo; endDateInput.value = formattedToday; ytEndDateInput.value = formattedToday; }
+function setDefaultDates() {
+    const today = new Date(); const oneWeekAgo = new Date(); oneWeekAgo.setDate(today.getDate() - 7);
+    const formattedToday = formatDateForInput(today);
+    const formattedOneWeekAgo = formatDateForInput(oneWeekAgo);
+    startDateInput.value = formattedOneWeekAgo;
+    endDateInput.value = formattedToday;
+    ytEndDateInput.value = formattedToday; // Set end date for YT, start date will be set dynamically
+}
 
 // --- CORE DATA FETCHING ---
 async function fetchNews() {
@@ -85,6 +91,7 @@ async function fetchNews() {
     localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify(allNewsArticles));
 }
 
+/* --- MODIFIED & FIXED: Rewritten YouTube parsing logic --- */
 async function fetchYoutubeVideos() {
     const fetchedVideos = [];
     await Promise.all(YOUTUBE_FEEDS.map(async feed => {
@@ -100,9 +107,11 @@ async function fetchYoutubeVideos() {
                 const title = item.querySelector('title')?.textContent.trim() || 'No Title';
                 const link = item.querySelector('link')?.getAttribute('href');
                 const pubDate = item.querySelector('published')?.textContent;
-                const mediaGroup = item.querySelector('group');
-                const thumbnail = mediaGroup?.querySelector('thumbnail')?.getAttribute('url');
-                const description = mediaGroup?.querySelector('description')?.textContent || '';
+                
+                // Correctly query namespaced tags by escaping the colon
+                const thumbnail = item.querySelector('media\\:thumbnail')?.getAttribute('url');
+                const description = item.querySelector('media\\:description')?.textContent || '';
+                
                 if (title && link && pubDate) {
                     fetchedVideos.push({ title, link, description: sanitizeText(description), pubDate, thumbnail, source: feed.name });
                 }
@@ -111,6 +120,7 @@ async function fetchYoutubeVideos() {
     }));
     allYoutubeVideos = fetchedVideos.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
     localStorage.setItem(YT_CACHE_KEY, JSON.stringify(allYoutubeVideos));
+    
     // Smart Date Range Setter
     if (allYoutubeVideos.length > 0) {
         const oldestVideoDate = new Date(allYoutubeVideos[allYoutubeVideos.length - 1].pubDate);
@@ -146,16 +156,12 @@ function removeKeyword(keywordToRemove) { activeKeywords.delete(keywordToRemove)
 function renderKeywordTags() { const keywordTagsContainer = document.getElementById('keywordTagsContainer'); keywordTagsContainer.innerHTML = ''; activeKeywords.forEach(keyword => { const tag = document.createElement('div'); tag.className = 'keyword-tag'; tag.textContent = keyword; const removeBtn = document.createElement('button'); removeBtn.className = 'remove-tag-btn'; removeBtn.innerHTML = '&times;'; removeBtn.onclick = () => removeKeyword(keyword); tag.appendChild(removeBtn); keywordTagsContainer.appendChild(tag); }); if (activeKeywords.size >= MAX_KEYWORDS) { keywordInput.disabled = true; addKeywordBtn.disabled = true; keywordInput.placeholder = "Max keywords reached"; } else { keywordInput.disabled = false; addKeywordBtn.disabled = false; keywordInput.placeholder = "e.g., skills gap, hbr, gartner"; } }
 function getCurrentlyFilteredArticles() { const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const selectedSource = sourceFilter.value; let filtered = allNewsArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; }); if (selectedSource !== 'all') { filtered = filtered.filter(article => article.source === selectedSource); } if (!activeCategories.has('all') && activeCategories.size > 0) { filtered = filtered.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); } if (activeKeywords.size > 0) { filtered = filtered.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).every(keyword => content.includes(keyword)); }); } return filtered; }
 function getCurrentlyFilteredVideos() { const startDate = new Date(ytStartDateInput.value); const endDate = new Date(ytEndDateInput.value); endDate.setHours(23, 59, 59, 999); const selectedChannel = channelFilter.value; let filtered = allYoutubeVideos.filter(video => { const videoDate = new Date(video.pubDate); return videoDate >= startDate && videoDate <= endDate; }); if (selectedChannel !== 'all') { filtered = filtered.filter(video => video.source === selectedChannel); } return filtered; }
-function generateContent(items, type, format) { let content = ''; const isVideo = type === 'video'; if (format === 'txt') { items.forEach((item, index) => { content += `--- ${isVideo ? 'Video' : 'Article'} ${index + 1} ---\nTitle: ${item.title}\nSource: ${item.source}\nDate: ${new Date(item.pubDate).toLocaleDateString()}\nLink: ${item.link}\nDescription: ${sanitizeText(item.description)}\n\n`; }); } else if (format === 'html') { content += `<!DOCTYPE html><html><head><title>GenAI Pulse Export</title><style>body{font-family:sans-serif;line-height:1.6;margin:20px;color:#333}.item{border-bottom:1px solid #eee;padding-bottom:20px;margin-bottom:20px}h1,h2{color:#0056b3}a{color:#007bff;text-decoration:none}a:hover{text-decoration:underline}.meta{font-size:.9em;color:#666}</style></head><body><h1>GenAI Pulse Export</h1>`; items.forEach(item => { content += `<div class="item"><h2><a href="${item.link}">${item.title}</a></h2><p class="meta"><strong>Source:</strong> ${item.source} | <strong>Date:</strong> ${new Date(item.pubDate).toLocaleDateString()}</p>${isVideo ? `<img src="${item.thumbnail}" width="320" style="float:left; margin-right: 15px;">` : ''}<p>${sanitizeText(item.description)}</p><div style="clear:both"></div></div>`; }); content += `</body></html>`; } return content; }
+function generateContent(items, type, format) { let content = ''; const isVideo = type === 'video'; if (format === 'txt') { items.forEach((item, index) => { content += `--- ${isVideo ? 'Video' : 'Article'} ${index + 1} ---\nTitle: ${item.title}\nSource: ${item.source}\nDate: ${new Date(item.pubDate).toLocaleDateString()}\nLink: ${item.link}\nDescription: ${sanitizeText(item.description)}\n\n`; }); } else if (format === 'html') { content += `<!DOCTYPE html><html><head><title>GenAI Pulse Export</title><style>body{font-family:sans-serif;line-height:1.6;margin:20px;color:#333}.item{border-bottom:1px solid #eee;padding-bottom:20px;margin-bottom:20px}h1,h2{color:#0056b3}a{color:#007bff;text-decoration:none}a:hover{text-decoration:underline}.meta{font-size:.9em;color:#666}</style></head><body><h1>GenAI Pulse Export</h1>`; items.forEach(item => { content += `<div class="item"><h2><a href="${item.link}">${item.title}</a></h2><p class="meta"><strong>Source:</strong> ${item.source} | <strong>Date:</strong> ${new Date(item.pubDate).toLocaleDateString()}</p>${isVideo && item.thumbnail ? `<img src="${item.thumbnail}" width="320" style="float:left; margin-right: 15px;">` : ''}<p>${sanitizeText(item.description)}</p><div style="clear:both"></div></div>`; }); content += `</body></html>`; } return content; }
 function downloadFile(filename, content, type) { const blob = new Blob([content], { type: type }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
 
 // --- EVENT LISTENERS ---
 window.addEventListener('DOMContentLoaded', () => {
-    setDefaultDates();
-    createCategoryToggles();
-    renderKeywordTags();
-    handleRouting();
-
+    setDefaultDates(); createCategoryToggles(); renderKeywordTags(); handleRouting();
     const overlay = document.getElementById('first-load-overlay');
     const loadingFactElement = document.getElementById('loading-fact');
     let factInterval;
@@ -185,7 +191,14 @@ window.addEventListener('DOMContentLoaded', () => {
         allNewsArticles = JSON.parse(localStorage.getItem(NEWS_CACHE_KEY) || '[]');
         allYoutubeVideos = JSON.parse(localStorage.getItem(YT_CACHE_KEY) || '[]');
         if (allNewsArticles.length > 0) { categorizeAllArticles(); populateSourceFilter(); }
-        if (allYoutubeVideos.length > 0) { populateChannelFilter(); }
+        if (allYoutubeVideos.length > 0) { 
+            // Smart Date Range Setter for cached videos
+            if (allYoutubeVideos.length > 0) {
+                const oldestVideoDate = new Date(allYoutubeVideos[allYoutubeVideos.length - 1].pubDate);
+                ytStartDateInput.value = formatDateForInput(oldestVideoDate);
+            }
+            populateChannelFilter();
+        }
         onAllDataLoaded();
     }
 });
