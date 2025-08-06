@@ -68,6 +68,15 @@ footer a:hover { text-decoration: underline; }
 .tab-btn.active { opacity: 1; border-bottom-color: var(--accent-1); }
 .hidden { display: none; }
 .card-thumbnail { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+/* --- NEW: Style for the info note --- */
+.info-note {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #546e7a;
+    margin: -1rem 0 0 0; /* Adjust margin to pull it closer to the controls */
+    width: 100%;
+    text-align: center;
+}
 @media (max-width: 992px) { .control-row { flex-direction: column; align-items: flex-start; } }
 @media (max-width: 768px) { .logo-text { font-size: 2rem; } .tagline { font-size: 1rem; } .container { padding: 0 1rem; margin: 1.5rem auto; } .action-button { width: 100%; justify-content: center; } .download-dropdown { width: 100%; } .dropdown-content { width: 100%; left: 0; right: auto; } }
 @media (max-width: 480px) { header { padding: 1.5rem 0.5rem; } .logo-text { font-size: 1.8rem; } .tagline { font-size: 0.9rem; } .controls { padding: 1rem; } .toggle-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; } .news-card h3, .video-card h3 { font-size: 1.1rem; } .news-card p { font-size: 0.85rem; } }
