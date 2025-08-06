@@ -37,7 +37,7 @@ header::before { content: ''; position: absolute; top: -50px; left: -50px; width
 .news-card a, .video-card a { text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%; }
 .card-content { padding: 1.5rem; flex-grow: 1; }
 .news-card h3, .video-card h3 { font-size: 1.3rem; margin-top: 0; margin-bottom: 0.8rem; color: var(--text-dark); line-height: 1.4; }
-.news-card p, .video-card p { font-size: 0.95rem; color: #546e7a; line-height: 1.6; margin: 0; }
+.news-card p { font-size: 0.95rem; color: #546e7a; line-height: 1.6; margin: 0; }
 .card-meta { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem; background: var(--primary-bg-light); border-top: 1px solid rgba(0,0,0,0.05); font-size: 0.85rem; color: #455a64; }
 .card-meta .source { font-weight: 600; color: var(--accent-1); }
 .card-meta .date { font-weight: 400; }
@@ -62,44 +62,12 @@ footer a:hover { text-decoration: underline; }
 .ai-brain-animation .node:nth-child(6), .ai-brain-animation path:nth-child(12) { animation-delay: 1s; }
 @keyframes pulse-node { from { transform: scale(0.8); opacity: 0.7; } to { transform: scale(1.2); opacity: 1; } }
 @keyframes draw-line { to { stroke-dashoffset: 0; } }
-
-/* --- NEW: Styles for Tabs and Video Cards --- */
-.main-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-}
-.tab-btn {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    padding: 0.8rem 1.5rem;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--text-dark);
-    opacity: 0.7;
-    border-bottom: 4px solid transparent;
-    transition: all 0.3s ease;
-}
-.tab-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    opacity: 1;
-}
-.tab-btn.active {
-    opacity: 1;
-    border-bottom-color: var(--accent-1);
-}
-.hidden {
-    display: none;
-}
-.card-thumbnail {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-}
-
+.main-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 2px solid rgba(255, 255, 255, 0.3); }
+.tab-btn { font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 600; padding: 0.8rem 1.5rem; cursor: pointer; border: none; background: transparent; color: var(--text-dark); opacity: 0.7; border-bottom: 4px solid transparent; transition: all 0.3s ease; text-decoration: none; }
+.tab-btn:hover { background: rgba(255, 255, 255, 0.2); opacity: 1; }
+.tab-btn.active { opacity: 1; border-bottom-color: var(--accent-1); }
+.hidden { display: none; }
+.card-thumbnail { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
 @media (max-width: 992px) { .control-row { flex-direction: column; align-items: flex-start; } }
 @media (max-width: 768px) { .logo-text { font-size: 2rem; } .tagline { font-size: 1rem; } .container { padding: 0 1rem; margin: 1.5rem auto; } .action-button { width: 100%; justify-content: center; } .download-dropdown { width: 100%; } .dropdown-content { width: 100%; left: 0; right: auto; } }
-@media (max-width: 480px) { header { padding: 1.5rem 0.5rem; } .logo-text { font-size: 1.8rem; } .tagline { font-size: 0.9rem; } .controls { padding: 1rem; } .toggle-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; } .news-card h3, .video-card h3 { font-size: 1.1rem; } .news-card p, .video-card p { font-size: 0.85rem; } }
+@media (max-width: 480px) { header { padding: 1.5rem 0.5rem; } .logo-text { font-size: 1.8rem; } .tagline { font-size: 0.9rem; } .controls { padding: 1rem; } .toggle-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; } .news-card h3, .video-card h3 { font-size: 1.1rem; } .news-card p { font-size: 0.85rem; } }
