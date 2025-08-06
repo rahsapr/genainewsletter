@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- The First Load Overlay -->
     <div id="first-load-overlay">
         <div class="loading-box">
             <svg class="ai-brain-animation" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg"><circle class="node" cx="10" cy="40" r="5"/><circle class="node" cx="35" cy="20" r="5"/><circle class="node" cx="35" cy="60" r="5"/><circle class="node" cx="65" cy="20" r="5"/><circle class="node" cx="65" cy="60" r="5"/><circle class="node" cx="90" cy="40" r="5"/><path class="connection" d="M 10 40 L 35 20"/><path class="connection" d="M 10 40 L 35 60"/><path class="connection" d="M 35 20 L 65 20"/><path class="connection" d="M 35 60 L 65 60"/><path class="connection" d="M 35 20 L 65 60"/><path class="connection" d="M 35 60 L 65 20"/><path class="connection" d="M 65 20 L 90 40"/><path class="connection" d="M 65 60 L 90 40"/></svg>
@@ -22,10 +21,9 @@
         <p class="tagline">Your AI & Future of Work Intelligence Hub</p>
     </header>
     <main class="container">
-        <!-- NEW: Tab Navigation -->
         <nav class="main-tabs">
-            <button id="tab-news" class="tab-btn active">News Articles</button>
-            <button id="tab-youtube" class="tab-btn">YouTube Videos</button>
+            <a href="#news" id="tab-news" class="tab-btn active">News Articles</a>
+            <a href="#youtube" id="tab-youtube" class="tab-btn">YouTube Videos</a>
         </nav>
 
         <!-- --- NEWS CONTENT AREA --- -->
@@ -50,11 +48,14 @@
         <div id="youtube-content-area" class="hidden">
              <div class="controls">
                 <div class="control-row">
+                    <div class="control-group"><button id="refreshYTBtn" class="action-button">Refresh Videos</button><div class="download-dropdown"><button id="downloadYTBtn" class="action-button">Download</button><div id="downloadYTDropdownContent" class="dropdown-content"><a href="#" id="downloadAllYTTxt">All Videos (.txt)</a><a href="#" id="downloadAllYTHtml">All Videos (.html)</a><a href="#" id="downloadFilteredYTTxt">Filtered Videos (.txt)</a><a href="#" id="downloadFilteredYTHtml">Filtered Videos (.html)</a></div></div></div>
                     <div class="control-group"><label for="yt-startDate">Date Range:</label><input type="date" id="yt-startDate" class="date-input"><label for="yt-endDate">to</label><input type="date" id="yt-endDate" class="date-input"></div>
+                </div>
+                <div class="control-row">
                     <div class="control-group"><label for="channelFilter">Filter by Channel:</label><select id="channelFilter" class="styled-select"><option value="all">All Channels</option></select></div>
                 </div>
             </div>
-            <div id="youtubeContainer" class="news-grid"></div>
+            <div id="youtubeContainer" class="news-grid"><div class="loader"></div></div>
         </div>
 
     </main>
