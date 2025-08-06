@@ -26,7 +26,6 @@
             <a href="#youtube" id="tab-youtube" class="tab-btn">YouTube Videos</a>
         </nav>
 
-        <!-- --- NEWS CONTENT AREA --- -->
         <div id="news-content-area">
             <div class="controls">
                 <div class="control-row">
@@ -44,7 +43,6 @@
             <div id="newsContainer" class="news-grid"><div class="loader"></div></div>
         </div>
         
-        <!-- --- YOUTUBE CONTENT AREA (Initially Hidden & Simplified) --- -->
         <div id="youtube-content-area" class="hidden">
              <div class="controls">
                 <div class="control-row">
@@ -62,7 +60,8 @@
                     </div>
                     <div class="control-group"><label for="channelFilter">Filter by Channel:</label><select id="channelFilter" class="styled-select"><option value="all">All Channels</option></select></div>
                 </div>
-                <p class="info-note">Displaying the latest ~15 videos per channel (due to YouTube RSS feed limitations).</p>
+                <!-- MODIFIED: The info note is updated -->
+                <p class="info-note">Displaying the 5 latest videos per channel.</p>
             </div>
             <div id="youtubeContainer" class="news-grid"><div class="loader"></div></div>
         </div>

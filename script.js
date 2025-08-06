@@ -60,6 +60,7 @@ function setDefaultDates() {
 
 // --- CORE DATA FETCHING ---
 async function fetchNews() {
+    // ... News fetching logic is unchanged and correct ...
     const fetchedArticles = [];
     await Promise.all(RSS_FEEDS.map(async feed => {
         try {
@@ -99,13 +100,22 @@ async function fetchYoutubeVideos() {
             const doc = parser.parseFromString(xmlText, "application/xml");
             if (doc.querySelector('parsererror')) { console.warn(`Could not parse XML for ${feed.name}.`); return; }
             const items = doc.querySelectorAll('entry');
-            items.forEach(item => {
+            
+            // --- MODIFIED: Process only the first 5 videos from each channel ---
+            const latestFiveItems = Array.from(items).slice(0, 5);
+
+            latestFiveItems.forEach(item => {
                 const title = item.querySelector('title')?.textContent.trim() || 'No Title';
                 const link = item.querySelector('link')?.getAttribute('href');
                 const pubDate = item.querySelector('published')?.textContent;
-                const mediaGroup = item.querySelector('media\\:group');
-                const thumbnail = mediaGroup?.querySelector('media\\:thumbnail')?.getAttribute('url');
-                const description = mediaGroup?.querySelector('media\\:description')?.textContent || '';
+                const mediaNamespace = 'http://search.yahoo.com/mrss/';
+                const mediaGroup = item.getElementsByTagNameNS(mediaNamespace, 'group')[0];
+                let thumbnail = '';
+                let description = '';
+                if (mediaGroup) {
+                    thumbnail = mediaGroup.getElementsByTagNameNS(mediaNamespace, 'thumbnail')[0]?.getAttribute('url');
+                    description = mediaGroup.getElementsByTagNameNS(mediaNamespace, 'description')[0]?.textContent || '';
+                }
                 if (title && link && pubDate) {
                     fetchedVideos.push({ title, link, description: sanitizeText(description), pubDate, thumbnail, source: feed.name });
                 }
@@ -119,6 +129,8 @@ async function fetchYoutubeVideos() {
 // --- FILTERING AND RENDERING ---
 function filterNews() { const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const selectedSource = sourceFilter.value; let filteredArticles = allNewsArticles; filteredArticles = filteredArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; }); if (selectedSource !== 'all') { filteredArticles = filteredArticles.filter(article => article.source === selectedSource); } if (!activeCategories.has('all') && activeCategories.size > 0) { filteredArticles = filteredArticles.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); } if (activeKeywords.size > 0) { filteredArticles = filteredArticles.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).every(keyword => content.includes(keyword)); }); } renderNews(filteredArticles); }
 function renderNews(articlesToDisplay) { newsContainer.innerHTML = ''; if (articlesToDisplay.length === 0) { newsContainer.innerHTML = '<p class="no-news">No news found for the selected filters.</p>'; return; } articlesToDisplay.forEach(article => { const card = document.createElement('div'); card.className = 'news-card'; card.innerHTML = `<a href="${article.link}" target="_blank" rel="noopener noreferrer"><div class="card-content"><h3>${article.title}</h3><p>${(article.description.length > 150 ? article.description.substring(0, 150) + '...' : article.description)}</p></div><div class="card-meta"><span class="source">${article.source}</span><span class="date">${new Date(article.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span></div></a>`; newsContainer.appendChild(card); }); }
+
+// MODIFIED: Simplified YouTube filtering (no date range)
 function filterYoutubeVideos() {
     const selectedChannel = channelFilter.value;
     let filteredVideos = allYoutubeVideos;
@@ -196,4 +208,8 @@ refreshYTBtn.addEventListener('click', () => { youtubeContainer.innerHTML = '<di
 channelFilter.addEventListener('change', filterYoutubeVideos);
 downloadYTBtn.addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('downloadYTDropdownContent').classList.toggle('show'); });
 document.getElementById('downloadFilteredYTTxt').addEventListener('click', (e) => { e.preventDefault(); const content = generateContent(getCurrentlyFilteredVideos(), 'video', 'txt'); downloadFile('genai_pulse_filtered_videos.txt', content, 'text/plain'); });
-document.getElementById('downloadFilteredYTHtml').addEventList
+document.getElementById('downloadFilteredYTHtml').addEventListener('click', (e) => { e.preventDefault(); const content = generateContent(getCurrentlyFilteredVideos(), 'video', 'html'); downloadFile('genai_pulse_filtered_videos.html', content, 'text/html'); });
+document.getElementById('downloadAllYTTxt').addEventListener('click', (e) => { e.preventDefault(); const content = generateContent(allYoutubeVideos, 'video', 'txt'); downloadFile('genai_pulse_all_videos.txt', content, 'text/plain'); });
+document.getElementById('downloadAllYTHtml').addEventListener('click', (e) => { e.preventDefault(); const content = generateContent(allYoutubeVideos, 'video', 'html'); downloadFile('genai_pulse_all_videos.html', content, 'text/html'); });
+// Universal listener to close dropdowns
+window.addEventListener('click', (e) => { document.querySelectorAll('.dropdown-content.show').forEach(dropdown => { if (!dropdown.parentElement.contains(e.target)) { dropdown.classList.remove('show'); } }); });
