@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚡ GenAI Pulse ⚡ - AI & Future of Work Intelligence Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-    
-    <!-- Link to your external CSS file -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,28 +22,47 @@
         <p class="tagline">Your AI & Future of Work Intelligence Hub</p>
     </header>
     <main class="container">
-        <div class="controls">
-            <div class="control-row">
-                <div class="control-group"><button id="refreshNewsBtn" class="action-button">Refresh News</button><div class="download-dropdown"><button id="downloadBtn" class="action-button">Download</button><div id="downloadDropdownContent" class="dropdown-content"><a href="#" id="downloadAllTxt">All News (.txt)</a><a href="#" id="downloadAllHtml">All News (.html)</a><a href="#" id="downloadFilteredTxt">Filtered News (.txt)</a><a href="#" id="downloadFilteredHtml">Filtered News (.html)</a></div></div></div>
-                <div class="control-group"><label for="startDate">Date Range:</label><input type="date" id="startDate" class="date-input"><label for="endDate">to</label><input type="date" id="endDate" class="date-input"></div>
+        <!-- NEW: Tab Navigation -->
+        <nav class="main-tabs">
+            <button id="tab-news" class="tab-btn active">News Articles</button>
+            <button id="tab-youtube" class="tab-btn">YouTube Videos</button>
+        </nav>
+
+        <!-- --- NEWS CONTENT AREA --- -->
+        <div id="news-content-area">
+            <div class="controls">
+                <div class="control-row">
+                    <div class="control-group"><button id="refreshNewsBtn" class="action-button">Refresh News</button><div class="download-dropdown"><button id="downloadBtn" class="action-button">Download</button><div id="downloadDropdownContent" class="dropdown-content"><a href="#" id="downloadAllTxt">All News (.txt)</a><a href="#" id="downloadAllHtml">All News (.html)</a><a href="#" id="downloadFilteredTxt">Filtered News (.txt)</a><a href="#" id="downloadFilteredHtml">Filtered News (.html)</a></div></div></div>
+                    <div class="control-group"><label for="startDate">Date Range:</label><input type="date" id="startDate" class="date-input"><label for="endDate">to</label><input type="date" id="endDate" class="date-input"></div>
+                </div>
+                <div class="control-row">
+                    <div class="control-group"><label>Filter by Topic:</label><div class="toggle-group" id="categoryToggles"></div></div>
+                    <div class="control-group"><label for="sourceFilter">Filter by Source:</label><select id="sourceFilter" class="styled-select"><option value="all">All Sources</option></select></div>
+                </div>
+                <div class="control-row">
+                     <div class="control-group" style="flex-direction: column; align-items: flex-start; width: 100%;"><label for="keywordInput">Custom Keyword Search (up to 5):</label><div class="keyword-input-group" style="width: 100%;"><input type="text" id="keywordInput" class="keyword-input" placeholder="e.g., skills gap, hbr, gartner"><button id="addKeywordBtn" class="action-button" style="padding: 0.6rem 1rem; font-size: 0.9rem;">Add</button></div><div id="keywordTagsContainer" class="keyword-tags-container"></div></div>
+                </div>
             </div>
-            <div class="control-row">
-                <div class="control-group"><label>Filter by Topic:</label><div class="toggle-group" id="categoryToggles"></div></div>
-                <div class="control-group"><label for="sourceFilter">Filter by Source:</label><select id="sourceFilter" class="styled-select"><option value="all">All Sources</option></select></div>
-            </div>
-            <div class="control-row">
-                 <div class="control-group" style="flex-direction: column; align-items: flex-start; width: 100%;"><label for="keywordInput">Custom Keyword Search (up to 5):</label><div class="keyword-input-group" style="width: 100%;"><input type="text" id="keywordInput" class="keyword-input" placeholder="e.g., skills gap, hbr, gartner"><button id="addKeywordBtn" class="action-button" style="padding: 0.6rem 1rem; font-size: 0.9rem;">Add</button></div><div id="keywordTagsContainer" class="keyword-tags-container"></div></div>
-            </div>
+            <div id="newsContainer" class="news-grid"><div class="loader"></div></div>
         </div>
-        <div id="newsContainer" class="news-grid"><div class="loader"></div></div>
+        
+        <!-- --- YOUTUBE CONTENT AREA (Initially Hidden) --- -->
+        <div id="youtube-content-area" class="hidden">
+             <div class="controls">
+                <div class="control-row">
+                    <div class="control-group"><label for="yt-startDate">Date Range:</label><input type="date" id="yt-startDate" class="date-input"><label for="yt-endDate">to</label><input type="date" id="yt-endDate" class="date-input"></div>
+                    <div class="control-group"><label for="channelFilter">Filter by Channel:</label><select id="channelFilter" class="styled-select"><option value="all">All Channels</option></select></div>
+                </div>
+            </div>
+            <div id="youtubeContainer" class="news-grid"></div>
+        </div>
+
     </main>
     <footer>
-        <p>Built to help friends stay curious about GenAI. A project by <a href="https://www.linkedin.com/in/rahulsapru444/" target="_blank" rel="noopener noreferrer">Rahul Sapru</a>.</p>
-
-        <p><strong>Disclaimer:</strong> News fetched from public RSS feeds. Filtering is applied client-side.</p>
+        <p>Built to help friends stay curious about GenAI. A project by <a href="#" target="_blank" rel="noopener noreferrer">Rahul Sapru</a>.</p>
+        <p><strong>Disclaimer:</strong> News fetched from public RSS feeds.</p>
     </footer>
 
-    <!-- Link to your external JS file -->
     <script src="script.js" defer></script>
 </body>
 </html>
