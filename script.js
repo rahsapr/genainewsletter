@@ -5,22 +5,10 @@ const LAST_FETCH_KEY = 'genaiPulseLastFetch';
 const CACHE_DURATION_MS = 6 * 60 * 60 * 1000; // Cache expires after 6 hours
 const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
-const RSS_FEEDS = [
-    { name: 'HBR (Main)', url: 'http://feeds.harvardbusiness.org/harvardbusiness' }, { name: 'HBR (Leadership)', url: 'https://hbr.org/topic/leadership/rss' }, { name: 'HBR (Technology)', url: 'https://hbr.org/topic/technology/rss' }, { name: 'HBR (HR Management)', url: 'https://hbr.org/topic/human-resource-management/rss' }, { name: 'Gartner News', url: 'https://www.gartner.com/en/newsroom/rss' }, { name: 'McKinsey Insights', url: 'https://www.mckinsey.com/featured-insights/rss.aspx' }, { name: 'SHRM (Policy & Affairs)', url: 'https://www.shrm.org/rss/public-policy-public-affairs.xml' }, { name: 'TechCrunch AI', url: 'https://techcrunch.com/category/artificial-intelligence/feed/' }, { name: 'OpenAI Blog', url: 'https://openai.com/blog/rss.xml' }, { name: 'Google AI Blog', url: 'https://ai.googleblog.com/feeds/posts/default' }, { name: 'Anthropic News', url: 'https://www.anthropic.com/news.xml' }, { name: 'Microsoft Blog', url: 'https://blogs.microsoft.com/feed/' }, { name: 'AWS News Blog', url: 'https://aws.amazon.com/blogs/aws/feed/' }, { name: 'NVIDIA Blog', url: 'https://blogs.nvidia.com/feed/' }, { name: 'AMD News', url: 'https://www.amd.com/en/newsroom.rss' }
-];
-const YOUTUBE_FEEDS = [
-    { name: 'Y Combinator', url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCcefcZRL2oaA_uBNeo5UOWg' },
-    { name: 'Matthew Berman', url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCawZsQWqfGSbCI5yjkdVkTA' },
-    { name: 'Two Minute Papers', url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCbfYPyITQ-7l4upoX8nvctg' },
-    { name: 'AI Explained', url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCNJ1Ymd5yFuUPtn21xtRbbw' }
-];
+const RSS_FEEDS = [ { name: 'HBR (Main)', url: 'http://feeds.harvardbusiness.org/harvardbusiness' }, { name: 'HBR (Leadership)', url: 'https://hbr.org/topic/leadership/rss' }, { name: 'HBR (Technology)', url: 'https://hbr.org/topic/technology/rss' }, { name: 'HBR (HR Management)', url: 'https://hbr.org/topic/human-resource-management/rss' }, { name: 'Gartner News', url: 'https://www.gartner.com/en/newsroom/rss' }, { name: 'McKinsey Insights', url: 'https://www.mckinsey.com/featured-insights/rss.aspx' }, { name: 'SHRM (Policy & Affairs)', url: 'https://www.shrm.org/rss/public-policy-public-affairs.xml' }, { name: 'TechCrunch AI', url: 'https://techcrunch.com/category/artificial-intelligence/feed/' }, { name: 'OpenAI Blog', url: 'https://openai.com/blog/rss.xml' }, { name: 'Google AI Blog', url: 'https://ai.googleblog.com/feeds/posts/default' }, { name: 'Anthropic News', url: 'https://www.anthropic.com/news.xml' }, { name: 'Microsoft Blog', url: 'https://blogs.microsoft.com/feed/' }, { name: 'AWS News Blog', url: 'https://aws.amazon.com/blogs/aws/feed/' }, { name: 'NVIDIA Blog', url: 'https://blogs.nvidia.com/feed/' }, { name: 'AMD News', url: 'https://www.amd.com/en/newsroom.rss' } ];
+const YOUTUBE_FEEDS = [ { name: 'Y Combinator', url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCcefcZRL2oaA_uBNeo5UOWg' }, { name: 'Matthew Berman', url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCawZsQWqfGSbCI5yjkdVkTA' }, { name: 'Two Minute Papers', url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCbfYPyITQ-7l4upoX8nvctg' }, { name: 'AI Explained', url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCNJ1Ymd5yFuUPtn21xtRbbw' } ];
 const CATEGORIES = {
-    'workforce': { name: 'Workforce / HR', keywords: ['workforce', 'employee', 'skills', 'upskilling', 'reskilling', 'hiring', 'talent', 'hr', 'future of work', 'jobs', 'productivity', 'culture', 'leadership'] },
-    'leadership': { name: 'Leadership Moves', keywords: ['appoint', 'ceo', 'cto', 'vp', 'head of ai', 'executive', 'board', 'transition', 'resign'] },
-    'product': { name: 'New Product/Tool', keywords: ['launch', 'release', 'unveil', 'introduce', 'feature', 'tool', 'model', 'platform', 'product', 'update', 'api', 'beta', 'demo'] },
-    'announcement': { name: 'Big Announcements', keywords: ['OpenAI', 'Google', 'Microsoft', 'Meta', 'Anthropic', 'Nvidia', 'AWS', 'Amazon', 'Azure', 'Intel', 'AMD', 'partnership', 'collaboration', 'major', 'breakthrough'] },
-    'regulatory': { name: 'Regulatory/Legal', keywords: ['bill', 'law', 'regulation', 'policy', 'act', 'court', 'legal', 'ethical', 'guideline', 'governance'] },
-    'general': { name: 'General AI News', keywords: [] }
+    'workforce': { name: 'Workforce / HR', keywords: ['workforce', 'employee', 'skills', 'upskilling', 'reskilling', 'hiring', 'talent', 'hr', 'future of work', 'jobs', 'productivity', 'culture', 'leadership'] }, 'leadership': { name: 'Leadership Moves', keywords: ['appoint', 'ceo', 'cto', 'vp', 'head of ai', 'executive', 'board', 'transition', 'resign'] }, 'product': { name: 'New Product/Tool', keywords: ['launch', 'release', 'unveil', 'introduce', 'feature', 'tool', 'model', 'platform', 'product', 'update', 'api', 'beta', 'demo'] }, 'announcement': { name: 'Big Announcements', keywords: ['OpenAI', 'Google', 'Microsoft', 'Meta', 'Anthropic', 'Nvidia', 'AWS', 'Amazon', 'Azure', 'Intel', 'AMD', 'partnership', 'collaboration', 'major', 'breakthrough'] }, 'regulatory': { name: 'Regulatory/Legal', keywords: ['bill', 'law', 'regulation', 'policy', 'act', 'court', 'legal', 'ethical', 'guideline', 'governance'] }, 'general': { name: 'General AI News', keywords: [] }
 };
 
 let allNewsArticles = [];
@@ -51,16 +39,17 @@ const downloadYTBtn = document.getElementById('downloadYTBtn');
 function sanitizeText(text) { const tempDiv = document.createElement('div'); tempDiv.innerHTML = text; return tempDiv.textContent || tempDiv.innerText || ''; }
 function formatDateForInput(date) { return date.toISOString().split('T')[0]; }
 function setDefaultDates() {
-    const today = new Date(); const oneWeekAgo = new Date(); oneWeekAgo.setDate(today.getDate() - 7);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1); // Set to yesterday
     const formattedToday = formatDateForInput(today);
-    const formattedOneWeekAgo = formatDateForInput(oneWeekAgo);
-    startDateInput.value = formattedOneWeekAgo;
-    endDateInput.value = formattedToday;
+    const formattedYesterday = formatDateForInput(yesterday);
+    startDateInput.value = formattedYesterday; // Default start date is yesterday
+    endDateInput.value = formattedToday;     // Default end date is today
 }
 
-// --- CORE DATA FETCHING ---
+// --- RESILIENT DATA FETCHING ---
 async function fetchNews() {
-    // ... News fetching logic is unchanged and correct ...
     const fetchedArticles = [];
     await Promise.all(RSS_FEEDS.map(async feed => {
         try {
@@ -100,18 +89,14 @@ async function fetchYoutubeVideos() {
             const doc = parser.parseFromString(xmlText, "application/xml");
             if (doc.querySelector('parsererror')) { console.warn(`Could not parse XML for ${feed.name}.`); return; }
             const items = doc.querySelectorAll('entry');
-            
-            // --- MODIFIED: Process only the first 5 videos from each channel ---
             const latestFiveItems = Array.from(items).slice(0, 5);
-
             latestFiveItems.forEach(item => {
                 const title = item.querySelector('title')?.textContent.trim() || 'No Title';
                 const link = item.querySelector('link')?.getAttribute('href');
                 const pubDate = item.querySelector('published')?.textContent;
                 const mediaNamespace = 'http://search.yahoo.com/mrss/';
                 const mediaGroup = item.getElementsByTagNameNS(mediaNamespace, 'group')[0];
-                let thumbnail = '';
-                let description = '';
+                let thumbnail = ''; let description = '';
                 if (mediaGroup) {
                     thumbnail = mediaGroup.getElementsByTagNameNS(mediaNamespace, 'thumbnail')[0]?.getAttribute('url');
                     description = mediaGroup.getElementsByTagNameNS(mediaNamespace, 'description')[0]?.textContent || '';
@@ -129,16 +114,7 @@ async function fetchYoutubeVideos() {
 // --- FILTERING AND RENDERING ---
 function filterNews() { const startDate = new Date(startDateInput.value); const endDate = new Date(endDateInput.value); endDate.setHours(23, 59, 59, 999); const selectedSource = sourceFilter.value; let filteredArticles = allNewsArticles; filteredArticles = filteredArticles.filter(article => { const articleDate = new Date(article.pubDate); return articleDate >= startDate && articleDate <= endDate; }); if (selectedSource !== 'all') { filteredArticles = filteredArticles.filter(article => article.source === selectedSource); } if (!activeCategories.has('all') && activeCategories.size > 0) { filteredArticles = filteredArticles.filter(article => Array.from(activeCategories).some(activeCat => article.categories.includes(activeCat))); } if (activeKeywords.size > 0) { filteredArticles = filteredArticles.filter(article => { const content = (article.title + ' ' + article.description).toLowerCase(); return Array.from(activeKeywords).every(keyword => content.includes(keyword)); }); } renderNews(filteredArticles); }
 function renderNews(articlesToDisplay) { newsContainer.innerHTML = ''; if (articlesToDisplay.length === 0) { newsContainer.innerHTML = '<p class="no-news">No news found for the selected filters.</p>'; return; } articlesToDisplay.forEach(article => { const card = document.createElement('div'); card.className = 'news-card'; card.innerHTML = `<a href="${article.link}" target="_blank" rel="noopener noreferrer"><div class="card-content"><h3>${article.title}</h3><p>${(article.description.length > 150 ? article.description.substring(0, 150) + '...' : article.description)}</p></div><div class="card-meta"><span class="source">${article.source}</span><span class="date">${new Date(article.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span></div></a>`; newsContainer.appendChild(card); }); }
-
-// MODIFIED: Simplified YouTube filtering (no date range)
-function filterYoutubeVideos() {
-    const selectedChannel = channelFilter.value;
-    let filteredVideos = allYoutubeVideos;
-    if (selectedChannel !== 'all') {
-        filteredVideos = filteredVideos.filter(video => video.source === selectedChannel);
-    }
-    renderYoutubeVideos(filteredVideos);
-}
+function filterYoutubeVideos() { const selectedChannel = channelFilter.value; let filteredVideos = allYoutubeVideos; if (selectedChannel !== 'all') { filteredVideos = filteredVideos.filter(video => video.source === selectedChannel); } renderYoutubeVideos(filteredVideos); }
 function renderYoutubeVideos(videosToDisplay) { youtubeContainer.innerHTML = ''; if (videosToDisplay.length === 0) { youtubeContainer.innerHTML = '<p class="no-news">No videos found. Try refreshing.</p>'; return; } videosToDisplay.forEach(video => { const card = document.createElement('div'); card.className = 'video-card'; card.innerHTML = `<a href="${video.link}" target="_blank" rel="noopener noreferrer"><img src="${video.thumbnail}" alt="${video.title}" class="card-thumbnail" loading="lazy"><div class="card-content"><h3>${video.title}</h3></div><div class="card-meta"><span class="source">${video.source}</span><span class="date">${new Date(video.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span></div></a>`; youtubeContainer.appendChild(card); }); }
 
 // --- UI AND UTILITY FUNCTIONS ---
@@ -166,28 +142,44 @@ function getCurrentlyFilteredVideos() { const selectedChannel = channelFilter.va
 function generateContent(items, type, format) { let content = ''; const isVideo = type === 'video'; if (format === 'txt') { items.forEach((item, index) => { content += `--- ${isVideo ? 'Video' : 'Article'} ${index + 1} ---\nTitle: ${item.title}\nSource: ${item.source}\nDate: ${new Date(item.pubDate).toLocaleDateString()}\nLink: ${item.link}\nDescription: ${sanitizeText(item.description)}\n\n`; }); } else if (format === 'html') { content += `<!DOCTYPE html><html><head><title>GenAI Pulse Export</title><style>body{font-family:sans-serif;line-height:1.6;margin:20px;color:#333}.item{border-bottom:1px solid #eee;padding-bottom:20px;margin-bottom:20px}h1,h2{color:#0056b3}a{color:#007bff;text-decoration:none}a:hover{text-decoration:underline}.meta{font-size:.9em;color:#666}</style></head><body><h1>GenAI Pulse Export</h1>`; items.forEach(item => { content += `<div class="item"><h2><a href="${item.link}">${item.title}</a></h2><p class="meta"><strong>Source:</strong> ${item.source} | <strong>Date:</strong> ${new Date(item.pubDate).toLocaleDateString()}</p>${isVideo && item.thumbnail ? `<img src="${item.thumbnail}" width="320" style="float:left; margin-right: 15px;">` : ''}<p>${sanitizeText(item.description)}</p><div style="clear:both"></div></div>`; }); content += `</body></html>`; } return content; }
 function downloadFile(filename, content, type) { const blob = new Blob([content], { type: type }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
 
-// --- EVENT LISTENERS ---
+// --- EVENT LISTENERS & INITIALIZATION ---
 window.addEventListener('DOMContentLoaded', () => {
     setDefaultDates(); createCategoryToggles(); renderKeywordTags(); handleRouting();
     const overlay = document.getElementById('first-load-overlay');
     const loadingFactElement = document.getElementById('loading-fact');
     let factInterval;
     const loadingFacts = [ "Fetching insights from HBR & McKinsey...", "Compiling the latest from tech leaders...", "Tuning the YouTube video feed...", "Waking up the AI research bots..." ];
+    
+    // --- Stale-While-Revalidate Logic ---
+    // 1. Immediately load from cache to make the app feel instant
+    const cachedNews = localStorage.getItem(NEWS_CACHE_KEY);
+    const cachedYT = localStorage.getItem(YT_CACHE_KEY);
+    if (cachedNews) { allNewsArticles = JSON.parse(cachedNews); categorizeAllArticles(); populateSourceFilter(); filterNews(); }
+    if (cachedYT) { allYoutubeVideos = JSON.parse(cachedYT); populateChannelFilter(); filterYoutubeVideos(); }
+    
+    // 2. Check if the cache is expired
     const lastFetch = localStorage.getItem(LAST_FETCH_KEY);
     const isCacheExpired = !lastFetch || (Date.now() - parseInt(lastFetch) > CACHE_DURATION_MS);
-    const onAllDataLoaded = () => { if (factInterval) clearInterval(factInterval); overlay.classList.add('hidden'); localStorage.setItem('genaiPulseVisitedBefore', 'true'); filterNews(); filterYoutubeVideos(); };
+
     if (isCacheExpired) {
+        // Only show overlay if cache is expired
         overlay.classList.remove('hidden');
         let factIndex = 0;
         factInterval = setInterval(() => { factIndex = (factIndex + 1) % loadingFacts.length; loadingFactElement.style.opacity = 0; setTimeout(() => { loadingFactElement.textContent = loadingFacts[factIndex]; loadingFactElement.style.opacity = 1; }, 300); }, 3000);
-        Promise.all([ fetchNews(), fetchYoutubeVideos() ]).then(() => { localStorage.setItem(LAST_FETCH_KEY, Date.now()); populateSourceFilter(); populateChannelFilter(); onAllDataLoaded(); });
+        
+        // 3. Fetch fresh data in the background
+        Promise.all([ fetchNews(), fetchYoutubeVideos() ]).then(() => {
+            localStorage.setItem(LAST_FETCH_KEY, Date.now());
+            populateSourceFilter(); 
+            populateChannelFilter();
+            if (factInterval) clearInterval(factInterval);
+            overlay.classList.add('hidden');
+            filterNews(); 
+            filterYoutubeVideos();
+        });
     } else {
+        // If cache is fresh, just make sure the overlay is hidden
         overlay.classList.add('hidden');
-        allNewsArticles = JSON.parse(localStorage.getItem(NEWS_CACHE_KEY) || '[]');
-        allYoutubeVideos = JSON.parse(localStorage.getItem(YT_CACHE_KEY) || '[]');
-        if (allNewsArticles.length > 0) { categorizeAllArticles(); populateSourceFilter(); }
-        if (allYoutubeVideos.length > 0) { populateChannelFilter(); }
-        onAllDataLoaded();
     }
 });
 window.addEventListener('hashchange', handleRouting);
