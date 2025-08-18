@@ -39,14 +39,16 @@ const downloadYTBtn = document.getElementById('downloadYTBtn');
 // --- HELPER FUNCTIONS ---
 function sanitizeText(text) { const tempDiv = document.createElement('div'); tempDiv.innerHTML = text; return tempDiv.textContent || tempDiv.innerText || ''; }
 function formatDateForInput(date) { return date.toISOString().split('T')[0]; }
+
+// This is the NEW code
 function setDefaultDates() {
     const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(today.getDate() - 2); // Set to the day before yesterday
     const formattedToday = formatDateForInput(today);
-    const formattedYesterday = formatDateForInput(yesterday);
-    startDateInput.value = formattedYesterday;
-    endDateInput.value = formattedToday;
+    const formattedTwoDaysAgo = formatDateForInput(twoDaysAgo);
+    startDateInput.value = formattedTwoDaysAgo; // Default start date is now 2 days ago
+    endDateInput.value = formattedToday;      // Default end date is still today
 }
 
 // --- REFACTORED FOR PERFORMANCE: Progressive Loading ---
